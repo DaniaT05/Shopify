@@ -7,14 +7,12 @@ import java.util.Scanner;
 public class User {
     public static boolean checkCredentials(String email, String password) {
         boolean found = false;
-
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(","); //delimiter , to separate values using ,
                 String storedEmail = parts[3];
                 String storedPassword = parts[4];
-
                 if (storedEmail.equals(email) && storedPassword.equals(password)) {
                     found = true;
                     break;
@@ -23,7 +21,23 @@ public class User {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-
+        return found;
+    }
+    public static boolean checkEmail(String email) {
+        boolean found = false;
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(","); //delimiter , to separate values using ,
+                String storedEmail = parts[3];
+                if (storedEmail.equals(email)) {
+                    found = true;
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
         return found;
     }
     public static void login() {
@@ -44,9 +58,38 @@ public class User {
             }
         }
         while (loopTerminator != true);
+        input.close();
+    }
+    public static void signup() {
+        Scanner input = new Scanner(System.in);
+        String fName, lName, email, password,confirmPassword;
+        boolean loopTerminator = false;
+        do {
+            System.out.println("Enter your first name: ");
+            fName = input.next();
+            System.out.println("Enter your last name: ");
+            lName = input.next();
+            System.out.println("Enter your email address: ");
+            email = input.next();
+            System.out.println("Enter password: ");
+            password = input.next();
+            System.out.println("Confirm Password: ");
+            confirmPassword = input.next();
+            if (checkEmail(email) == false) {
+                System.out.println("Account created. Please log in.");
+                loopTerminator = true;
+            }
+            else {
+                System.out.println("Email already exists!");
+                break;
+            }
+        }
+        while (loopTerminator != true);
+        input.close();
     }
     public static void main (String[] args) {
         login();
+        signup();
     }
         
     
