@@ -19,7 +19,7 @@ public class Seller {
                 while (true) {
                     System.out.print("Enter a product (or type 'exit' to finish adding products): ");
                     String product = scanner.nextLine();
-                    if (product.equalsIgnoreCase("exit")) {
+                    if (product.equalsIgnoreCase("exit")) \{
                         break; // Exit the loop if the admin types 'exit'
                     }
                     products.add(product);

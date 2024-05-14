@@ -1,23 +1,27 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
 public class EcomManagementSystem {
     public static void main(String[] args) {
-        // Initialize system
-        CustomerModule customerModule = new CustomerModule();
-        SellerModule sellerModule = new SellerModule();
-        AdminModule adminModule = new AdminModule();
 
+        FileWriter file = new FileWriter("Users.txt");
+        
         // Start system
         while (true) {
             System.out.println("Welcome to Ecommerce Management System!");
-            System.out.println("1. Customer Module");
-            System.out.println("2. Seller Module");
-            System.out.println("3. Admin Module");
-            System.out.println("4. Exit");
+            System.out.println("Do you want to log in or sign up?");
+            System.out.println("1. Log in");
+            System.out.println("2. Sign up");
+            System.out.println("3. Exit");
 
             int choice = Integer.parseInt(System.console().readLine("Enter your choice: "));
 
             switch (choice) {
                 case 1:
-                    customer.run();
+                    
                     break;
                 case 2:
                     seller.run();
