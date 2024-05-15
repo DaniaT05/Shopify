@@ -1,8 +1,15 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
+public static void main (String[] args) {
+    login();
+    signup();
+}
+    
 
 public class User {
     public static boolean checkCredentials(String email, String password) {
@@ -68,21 +75,34 @@ public class User {
     }
     public static void signup() {
         Scanner input = new Scanner(System.in);
-        String fName, lName, email, password,confirmPassword;
+        String fName, lName, userType, email, password,confirmPassword;
         boolean loopTerminator = false;
         do {
             System.out.println("Enter your first name: ");
             fName = input.next();
             System.out.println("Enter your last name: ");
             lName = input.next();
+            System.out.println("Are you a buyer or a seller?: ");
+            userType = input.next();
             System.out.println("Enter your email address: ");
             email = input.next();
             System.out.println("Enter password: ");
             password = input.next();
             System.out.println("Confirm Password: ");
             confirmPassword = input.next();
+            String userInfo = userId + ", " + userType + ", " + fName + " " + lName + ", " + email + ", " + password;
+
+        // Write to file
+        
             if (checkEmail(email) == false && password == confirmPassword) {
-                System.out.println("Account created. Please log in.");
+                try (PrintWriter writer = new PrintWriter(new FileWriter("Users.txt", true))) {
+                    writer.println(userInfo);
+                    System.out.println("Account created. Please log in.");
+                }
+                catch (IOException e) {
+                    System.out.println("An error occurred while writing to file.");
+                    e.printStackTrace();
+                }
                 loopTerminator = true;
             }
             else {
@@ -93,10 +113,6 @@ public class User {
         while (loopTerminator != true);
         input.close();
     }
-    public static void main (String[] args) {
-        login();
-        signup();
-    }
-        
+  
     
 }
