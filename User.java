@@ -25,9 +25,15 @@ public class User {
     }
     public static boolean checkEmail(String email) {
         boolean found = false;
+        boolean firstLineSkipped = false;
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    // Skip the first line
+                    firstLineSkipped = true;
+                    continue;
+                }
                 String[] parts = line.split(","); //delimiter , to separate values using ,
                 String storedEmail = parts[3];
                 if (storedEmail.equals(email)) {
@@ -75,7 +81,7 @@ public class User {
             password = input.next();
             System.out.println("Confirm Password: ");
             confirmPassword = input.next();
-            if (checkEmail(email) == false) {
+            if (checkEmail(email) == false && password == confirmPassword) {
                 System.out.println("Account created. Please log in.");
                 loopTerminator = true;
             }
