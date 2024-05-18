@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -86,16 +88,34 @@ public class User {
             password = input.next();
             System.out.println("Confirm Password: ");
             confirmPassword = input.next();
+            
             if (!checkEmail(email) && password.equals(confirmPassword)) {
-                System.out.println("Account created. Please log in.");
-                loopTerminator = true;
-            }
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt", true)); BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+                    String line;
+                    String lastLine = null;
+                    while ((line = reader.readLine()) != null) {
+                        lastLine = line; // Store the last line read
+                    }
+                    int lastId = 0;
+                    if (lastLine != null) {
+                        String[] parts = lastLine.split(",");
+                        lastId = Integer.parseInt(parts[0]); // Extract the last ID
+                    }
+                    int newId = lastId + 1; // Increment the last ID to get the new ID
+                    String userInfo = newId + ",\t\t\t" + firstName + ",\t\t\t" + lastName + ",\t\t\t" + email + ",\t\t\t" + password;
+                    writer.write(userInfo + "\n");
+                    System.out.println("Account created successfully. Please log in.");
+                    loopTerminator = true;
+                } 
+                catch (IOException e) {
+                    System.out.println("Error occurred while writing to file: " + e.getMessage());
+                }
+            } 
             else {
-                System.out.println("Email already exists!");
-                break;
+                System.out.println("Email already exists or passwords do not match. Please try again.");
             }
         }
-        while (loopTerminator != true);
+        while (!loopTerminator);
         input.close();
     }
     public static void main (String[] args) {
@@ -124,8 +144,10 @@ public class User {
                         System.out.println("Invalid choice. Please enter 1, 2, or 3.");
                 }
             } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
+                System.out.println("An error occurred: Invalid Input");                
+                input.next();
             }
         }
+        input.close();
     }
 }
