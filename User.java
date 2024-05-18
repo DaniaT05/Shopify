@@ -1,6 +1,6 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -82,16 +82,12 @@ public class User {
                     continue;
                 }
                 String[] parts = line.split(","); //delimiter , to separate values using ,
-                if (parts.length > 0) {
-                    String storedEmail = parts[3];
-                    String storedPassword = parts[4];
-                    if (storedEmail.equals(email) && storedPassword.equals(password)) {
-                        found = true;
-                        break;
-                    }
+                String storedEmail = parts[3].trim();
+                String storedPassword = parts[4].trim();
+                if (storedEmail.equals(email) && storedPassword.equals(password)) {
+                    found = true;
+                    break;
                 }
-                else
-                    continue;
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
@@ -111,10 +107,15 @@ public class User {
                     continue;
                 }
                 String[] parts = line.split(","); //delimiter , to separate values using ,
-                String storedEmail = parts[3];
-                if (storedEmail.equals(email)) {
-                    found = true;
-                    break;
+                if (parts.length >= 4) { // Ensure parts has at least 4 elements
+                    String storedEmail = parts[3].trim();
+                    if (storedEmail.equals(email)) {
+                        found = true;
+                        break;
+                    }
+                } else {
+                    // Handle case where line doesn't have enough elements
+                    System.err.println("Invalid format in Users.txt: " + line);
                 }
             }
         } catch (IOException e) {
