@@ -1,3 +1,3 @@
 User ID | User Type | Name            | Email                   | Password
-1,          admin,    Admin User,       admin@ecomproject.com,    pass123
-2,          seller, 
+1,          admin,          Admin User,         admin@ecomproject.com,          pass123
+2,          seller,         Sara Azeem,         saraazeem@gmail.com,            saraaaa
