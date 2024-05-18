@@ -3,42 +3,40 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class User {
+    public static final Scanner input = new Scanner(System.in);
     public static void main (String[] args) {
         homePage();
     }
     public static void homePage() {
-        Scanner input = new Scanner(System.in);
         int choice;
         boolean validInput = false;
         while (!validInput) {
             try {
                 System.out.println("Ecom Project!! Do you want to \n1. Sign Up\n2. Log In\n3. Exit");
                 choice = input.nextInt();
+                input.nextLine(); // Consume newline left-over
                 switch (choice) {
                     case 1: {
                         validInput = true;
                         if (signup()) {
-                            System.out.println("Sign Up Successful!!");
-                            System.out.println("Now Log in please.");
+                            System.out.println("Sign Up Successful!! Now Log in please.");
                         }
                         break;
                     }
                     case 2: {
                         validInput = true;
                         String out = login();
-                        if (out != "Invalid") {
-                            if (findUserTypeByEmail(out) == "seller") {
-                                sellerHomePage();
-                            }
-                            else if (findUserTypeByEmail(out) == "buyer") {
-                                buyerHomePage();
-                            }
-                            if (findUserTypeByEmail(out) == "admin") {
-                                adminHomePage();
+                        if (!out.equals("Invalid")) {
+                            String userType = findUserTypeByEmail(out);
+                            if (userType.equals("seller")) {
+                                sellerHomePage(out);
+                            } else if (userType.equals("buyer")) {
+                                buyerHomePage(out);
+                            } else if (userType.equals("admin")) {
+                                adminHomePage(out);
                             }
                         }
                         else {
@@ -60,19 +58,69 @@ public class User {
                 input.next();
             }
         }
-        input.close();
     }
-    public static void sellerHomePage() {
-
+    public static void sellerHomePage(String email) {
+        System.out.println("Welcome\nWhat would you like to do: ");
+        System.out.println("1. View Products\n2. Update Products\n3. Remove a Product\n4. View Orders\n5. View Profile\n5. Log Out");
+        // viewProducts();
+        // updateProducts();
+        // removeProducts();
+        // viewOrder();
+        // executeOrder();
+        // viewProfile();
+        // stats();
     }
-    public static void buyerHomePage() {
-        
+    public static void buyerHomePage(String email) {
+        System.out.println("Welcome!\nWhat would you like to do: ");
+        System.out.println("1. View Products\n2. searchProducts\n3. viewProfile\n4. Log Out");
+        // viewProducts();
+        // searchProducts();
+        // placeOrder();
+        // viewOrder();
+        // viewReceipt();
+        // viewProfile();
     }
-    public static void adminHomePage() {
-        
+    public static void displayProductsBySeller(String sellerName) {
+        String filePath = "products.txt"; // Path to your text file
+        BufferedReader reader = null;
+        String line;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            while ((line = reader.readLine()) != null) {
+                // Splitting the line to extract sellerName
+                String[] productInfo = line.split(",");
+                if (productInfo.length == 4 && productInfo[0].equals(sellerName)) {
+                    // If the sellerName matches, print the product information
+                    System.out.println("Seller: " + productInfo[0] +
+                            ", Product: " + productInfo[1] +
+                            ", Price: " + productInfo[2] +
+                            ", Quantity: " + productInfo[3]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
+    public static void adminHomePage(String email) {
+        System.out.println("Welcome!\nWhat would you like to do: ");
+        System.out.println("1. Add Category/ies\n2. Register Sellers\n3. Register Buyers\n4. Search a seller\n5. Search a buyer\n6. View Products\n7. Log Out");
+        // addcategories();
+        // sellerRegistration();
+        // buyerRegistration();
+        // searchbuyer();
+        // searchSeller();
+        // viewProducts();
+    }
+    
     public static boolean checkCredentials(String email, String password) {
-        boolean found = false;
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
             String line;
             boolean firstLineSkipped = false;
@@ -82,24 +130,24 @@ public class User {
                     continue;
                 }
                 String[] parts = line.split(","); //delimiter , to separate values using ,
-                String storedEmail = parts[3].trim();
-                String storedPassword = parts[4].trim();
-                if (storedEmail.equals(email) && storedPassword.equals(password)) {
-                    found = true;
-                    break;
+                if (parts.length >= 5) {
+                    String storedEmail = parts[3].trim();
+                    String storedPassword = parts[4].trim();
+                    if (storedEmail.equals(email) && storedPassword.equals(password)) {
+                        return true;
+                    }
                 }
-            }
+            }    
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-        return found;
+        return false;
     }
 
     public static boolean checkEmail(String email) {
-        boolean found = false;
-        boolean firstLineSkipped = false;
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
-            String line;
+            String line;       
+            boolean firstLineSkipped = false;
             while ((line = reader.readLine()) != null) {
                 if (!firstLineSkipped) {
                     // Skip the first line
@@ -110,8 +158,7 @@ public class User {
                 if (parts.length >= 4) { // Ensure parts has at least 4 elements
                     String storedEmail = parts[3].trim();
                     if (storedEmail.equals(email)) {
-                        found = true;
-                        break;
+                        return true;
                     }
                 } else {
                     // Handle case where line doesn't have enough elements
@@ -121,12 +168,12 @@ public class User {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-        return found;
+        return false;
     }
     public static String findUserTypeByEmail(String email) {
-        boolean firstLineSkipped = false;
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
-            String line, userType;
+            String line;
+            boolean firstLineSkipped = false;
             while ((line = reader.readLine()) != null) {
                 if (!firstLineSkipped) {
                     // Skip the first line
@@ -137,13 +184,11 @@ public class User {
                 if (parts.length >= 4) { // Ensure parts has at least 4 elements
                     String storedEmail = parts[3].trim();
                     if (storedEmail.equals(email)) {
-                        userType = parts[1];
-                        return userType;
+                        return parts[1].trim();
                     }
                 } else {
                     // Handle case where line doesn't have enough elements
                     System.err.println("Invalid format in Users.txt: " + line);
-                    return "error";
                 }
             }
         } catch (IOException e) {
@@ -153,81 +198,86 @@ public class User {
     }
     
     public static String login() {
-        Scanner input = new Scanner(System.in);
-        String email, password;
         System.out.println("Enter your email address: ");
-        email = input.nextLine();
+        String email = input.nextLine();
         System.out.println("Enter password: ");
-        password = input.next();
+        String password = input.next();
         if (checkCredentials(email,password)) {
             System.out.println("You are signed in");
-            input.close();
             return email;
         }
         else {
             System.out.println("Incorrect email or password");
-            input.close();
             return "Invalid";
         } 
     }
     public static boolean signup() {
-        Scanner input = new Scanner(System.in);
         int userTypeInt;
-        String firstName, lastName, userType, email, password,confirmPassword;
+        String firstName, lastName, email, password,confirmPassword;
+        String userType = "";
             System.out.println("Enter your first name: ");
             firstName = input.next();
             System.out.println("Enter your last name: ");
             lastName = input.next();
-            while (userTypeGiven)
+            boolean validUserType = false;
+            while (!validUserType) {
                 System.out.println("Are you a \n1. Buyer or \n2. Seller? ");
                 userTypeInt = input.nextInt();
+                input.nextLine(); // Consume newline left-over
                 if (userTypeInt == 1) {
                     userType = "buyer";
+                    validUserType = true;
                 }
                 else if (userTypeInt == 2) {
                     userType = "seller";
+                    validUserType = true;
                 }
                 else {
                     System.out.println("Invalid option entered");
                 }
+            }
             System.out.println("Enter your email address: ");
             email = input.next();
             System.out.println("Enter password: ");
             password = input.next();
             System.out.println("Confirm Password: ");
             confirmPassword = input.next();
-        
             if (!checkEmail(email) && password.equals(confirmPassword)) {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt", true)); BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
-                    String line;
-                    String lastLine = null;
-                    while ((line = reader.readLine()) != null) {
-                        lastLine = line; // Store the last line read
-                    }
-                    int lastId = 0;
-                    if (lastLine != null) {
-                        String[] parts = lastLine.split(",");
-                        lastId = Integer.parseInt(parts[0]); // Extract the last ID
-                    }
-                    int newId = lastId + 1; // Increment the last ID to get the new ID
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt", true))) {
+                    int newId = getLastId() + 1;
                     String userInfo = newId + ",\t\t\t" + userType + ",\t\t\t" + firstName + ",\t\t\t" + lastName + ",\t\t\t" + email + ",\t\t\t" + password;
                     writer.write(userInfo + "\n");
                     System.out.println("Account created successfully. Please log in.");
-                    input.close();
                     return true;
-                } 
-                catch (IOException e) {
+                } catch (IOException e) {
                     System.out.println("Error occurred while writing to file: " + e.getMessage());
-                    input.close();
                     return false;
                 }
-            }
-            else {
+            } else {
                 System.out.println("Email already exists or passwords do not match. Please try again.");
-                input.close();
                 return false;
             }
-        
-    }
+        }
     
+    public static int getLastId() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            String lastLine = null;
+            while ((line = reader.readLine()) != null) {
+                lastLine = line;
+            }
+            if (lastLine != null) {
+                String[] parts = lastLine.split(",");
+                return Integer.parseInt(parts[0].trim());
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return 0; // Default ID if file is empty or not found
+    }
+}
+
+public static void logOut() {
+    System.out.println("Logging out...");
+    homePage();
 }
