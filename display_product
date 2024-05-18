@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class ProductDisplay {
+
+    public static void main(String[] args) {
+        // Call the method to display products of a specified seller
+        displayProductsBySeller("specifiedSellerName");
+    }
+
+    public static void displayProductsBySeller(String sellerName) {
+        String filePath = "products.txt"; // Path to your text file
+        BufferedReader reader = null;
+        String line;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            while ((line = reader.readLine()) != null) {
+                // Splitting the line to extract sellerName
+                String[] productInfo = line.split(",");
+                if (productInfo.length == 4 && productInfo[0].equals(sellerName)) {
+                    // If the sellerName matches, print the product information
+                    System.out.println("Seller: " + productInfo[0] +
+                            ", Product: " + productInfo[1] +
+                            ", Price: " + productInfo[2] +
+                            ", Quantity: " + productInfo[3]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}
