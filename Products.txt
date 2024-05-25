@@ -1,14 +1,14 @@
-Product_ID | Name               | Price | Currency | Seller_ID | Category_ID
-1,           Cup,                   80,     pkr,        7,            2
-2,           Tray,                  50,     pkr,        7,            2
-3,           Microwave Oven,       8000,    pkr,        6,            1
-4,           Eye Shadow,           2000,    pkr,        4,            3
-5,           Blue Velvet,          4000,    pkr,        8,            4
+Product_ID | Name               | Price | Seller_ID | Category_ID | Quantity
+1|           Cup|                   80|       7|            2
+2|           Tray|                  50|       7|            2
+3|           Microwave Oven|       8000|      6|            1
+4|           Eye Shadow|           2000|      4|            3
+5|           Blue Velvet|          4000|      8|            4
 
 
-1,Electronics
-2,Household Items
-3,Cosmetics
-4,Clothes
-5,Shoes
-6,Stationary
+1|Electronics
+2|Household Items
+3|Cosmetics
+4|Clothes
+5|Shoes
+6|Stationary
