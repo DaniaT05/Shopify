@@ -1,7 +1,7 @@
 Category_ID  |  Category_Name
-1,              Electronics
-2,              Household Items
-3,              Cosmetics
-4,              Clothes
-5,              Shoes
-6,              Stationary
+1|              Electronics
+2|              Household Items
+3|              Cosmetics
+4|              Clothes
+5|              Shoes
+6|              Stationary

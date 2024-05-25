@@ -1,2 +1,3 @@
-Order_ID | Buyer_ID | Seller_ID | Price | Status | Order_Placed | Execution_Date
-1,           3,         4,       900,               8/10/23,     10/10/23     
+Cart_ID | Buyer_ID | Product_ID | Quantity
+1|          3|          1|          2
+2|          3|          3|          1
