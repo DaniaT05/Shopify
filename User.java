@@ -9,10 +9,10 @@ public class User {
     }
     public static final Scanner input = new Scanner(System.in);
     public static void homePage() {
-        int choice;
+        int choice=0;
         boolean validInput = false;
-        
         while (!validInput) {
+        while(choice!=3){
             try {
                 System.out.println("Ecom Project!! Do you want to \n1. Sign Up\n2. Log In\n3. Exit");
                 choice = input.nextInt();
@@ -31,8 +31,10 @@ public class User {
                         //logIn() returns email. if email is invalid, it will ask again
                         if (!email.equals("Invalid")) {
                             String userType = findUserTypeByEmail(email);
+                            
+                            System.out.println(userType);
                             if (userType.equals("seller")) {
-                                // sellerHomePage(email);
+                                sellerHomePage(email);
                             } else if (userType.equals("admin")) {
                                 adminHomePage(email);
                             } else {
@@ -57,12 +59,14 @@ public class User {
                 input.next();
             }
         }
+        }
+      
     }
     public static void buyerHomePage(String email) {
         boolean exit = false;
         while (!exit) {
             System.out.println("Welcome!\nWhat would you like to do: ");
-            System.out.println("1. View Products\n2. searchProducts\n3. viewProfile\n4. Log Out");
+            System.out.println("1. View Products\n2. searchProducts\n3. viewProfile\n7. Log Out");
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
             switch (choice) {
@@ -481,7 +485,7 @@ public class User {
         String categoryName = input.nextLine();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Category.txt", true))) {
             int newId = getLastId("Category.txt") + 1;
-            String categoryInfo = newId + ", " + categoryName;
+            String categoryInfo = newId + "| " + categoryName;
             writer.write(categoryInfo + "\n");
             System.out.println("Category added successfully.");
         } catch (IOException e) {
