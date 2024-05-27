@@ -66,12 +66,12 @@ public class User {
         boolean exit = false;
         while (!exit) {
             System.out.println("Welcome!\nWhat would you like to do: ");
-            System.out.println("1. View Products\n2. searchProducts\n3. viewProfile\n7. Log Out");
+            System.out.println("1. View Categories\n2. Search Products\n3. View Products\n4. View Profile\n5. View Order Status\n6. View Cart\n7. Log Out");
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
             switch (choice) {
                 case 1:
-                    viewCategories();
+                    viewProducts();
                     break;
                 case 2:
                     searchProducts();
