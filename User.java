@@ -158,7 +158,7 @@ public class User {
         while (!exit) {
             try {
                 System.out.println("Welcome Admin! What would you like to do:");
-                System.out.println("1. Add Categories\n2. View Categories\n3.Update Categories\n4. Remove Categories\n5. Approve Sellers\n6. Search a user (buyer/seller)\n7. Remove User\n8. View Products\n9. View Profile\n10. Log Out");
+                System.out.println("1. Add Categories\n2. View Categories\n3. Update Categories\n4. Remove Categories\n5. Approve Sellers\n6. Search a user (buyer/seller)\n7. Remove User\n8. View Products\n9. View Profile\n10. Log Out");
                 int choice = input.nextInt();
                 input.nextLine(); // Consume newline left-over
                 switch (choice) {
@@ -193,7 +193,7 @@ public class User {
                         try {
                         System.out.println("Enter the ID of category you want to remove: ");
                         int categoryID = input.nextInt();
-                        remove(categoryID, "Category.txt");
+                        remove(categoryID, "Category.txt", "Category");
                         }
                         catch (InputMismatchException ex) {
                             System.out.println("Invalid Input");
@@ -1019,59 +1019,56 @@ public class User {
             System.out.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
-public static void remove(int categoryId, String inputFile) {
-        viewCategories();
+    public static void remove(int categoryId, String inputFile, String type) {
         File originalFile = new File(inputFile);
-        File tempFile = new File("Temp.txt");
-        BufferedReader reader = null;
-        BufferedWriter writer = null;
+        List<String> lines = new ArrayList<>();
         boolean categoryFound = false;
-        try {
-            reader = new BufferedReader(new FileReader(inputFile));
-            writer = new BufferedWriter(new FileWriter(tempFile));
+        boolean firstLineSkipped = false;
+    
+        // Read the file into a list of strings
+        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile))) {
             String currentLine;
             while ((currentLine = reader.readLine()) != null) {
-                // Split the line by "|" to get the category ID
+                if (!firstLineSkipped) {
+                    lines.add(currentLine); // Add the header line as is
+                    firstLineSkipped = true;
+                    continue;
+                }
                 String[] parts = currentLine.split("\\|");
                 if (parts.length >= 2) {
-                    int currentCategoryId = Integer.parseInt(parts[0].trim());
-                    // If the category ID matches, skip this line
-                    if (currentCategoryId == categoryId) {
+                    int currentId = Integer.parseInt(parts[0].trim());
+                    // If the ID matches, skip this line
+                    if (currentId == categoryId) {
                         categoryFound = true;
                         continue;
                     }
                 }
-                // Write the line to the temporary file
-                writer.write(currentLine + System.getProperty("line.separator"));
+                lines.add(currentLine);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-                if (writer != null)
-                    writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("An error occurred while reading the file: " + e.getMessage());
+            return;
+        } catch (NumberFormatException e) {
+            System.out.println("An error occurred while parsing the category ID: " + e.getMessage());
+            return;
         }
+    
         // If category was not found, print a message
         if (!categoryFound) {
-            System.out.println("Category with ID " + categoryId + " not found.");
-            // Delete the temporary file if it was created
-            if (tempFile.exists()) {
-                tempFile.delete();
+            System.out.println(type + " with ID " + categoryId + " not found.");
+            return;
+        }
+    
+        // Write the list of strings back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile))) {
+            for (String line : lines) {
+                writer.write(line + System.lineSeparator());
             }
-            return;
-        }
-        // Replace the original file with the temporary file
-        if (!originalFile.delete()) {
-            System.out.println("Could not delete file");
-            return;
-        }
-        if (!tempFile.renameTo(originalFile)) {
-            System.out.println("Could not rename file");
+            System.out.println("Category removed successfully.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
+    
+    
 }
