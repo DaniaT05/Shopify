@@ -5,7 +5,7 @@ import java.util.*;
 /*signUp
   logIn -> checkCredentials -> emailExists
 */
-public class User {
+public class ECommerceProject {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
         homePage();
@@ -79,7 +79,7 @@ public class User {
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
             switch (choice) {
-                case 1:
+                case 1: 
                     viewCategories();
                     break;
                 case 2:
@@ -89,7 +89,7 @@ public class User {
                    viewProducts();
                     break;
                 case 4:
-                    //viewProfile(email);
+                    viewProfile(email);
                     break;
                 case 5:
                     viewOrderStatus(email);
@@ -271,13 +271,13 @@ public class User {
                 int choice = input.nextInt();
                 input.nextLine(); // Consume newline left-over
                 switch (choice) {
-                    case 1:
+                    case 1: //works
                         addCategories();
                         break;
-                    case 2:
+                    case 2: //works
                         viewCategories();
                         break;
-                    case 3: {
+                    case 3: { //works, updates categories
                         viewCategories();
                         boolean validCategory = false;
                         int categoryID = 0;
@@ -298,7 +298,7 @@ public class User {
                         updateCategory(categoryID, newCategoryName, "Category.txt", "Category");
                         break;
                     }
-                    case 4:
+                    case 4: // works, removes categories
                         try {
                         System.out.println("Enter the ID of category you want to remove: ");
                         int categoryID = input.nextInt();
@@ -309,7 +309,7 @@ public class User {
                         }
                         break;
                     case 5:
-                       //approveSellers();
+                    //    approveSellers(sellerID);
                         break;
                     case 6:
                         //searchUsers();
@@ -321,7 +321,7 @@ public class User {
                         viewProducts();
                         break;
                     case 9:
-                        //viewProfile(email);
+                        viewProfile(email);
                         break;
                     case 10:
                         exit = true;
@@ -564,14 +564,16 @@ public class User {
                     continue;
                 }
                 String[] parts = line.split("\\|");
-                if (parts.length >= 6) {
-                    String storedEmail = parts[4].trim();
+                if (parts.length >= 5) {
+                    String storedEmail = parts[3].trim();
                     if (storedEmail.equals(email)) {
                         System.out.println("Profile Information:");
-                        System.out.println("First Name: " + parts[2].trim());
-                        System.out.println("Last Name: " + parts[3].trim());
-                        System.out.println("Email: " + parts[4].trim());
-                        System.out.println("Address: " + parts[6].trim());
+                        System.out.println("User ID " + parts[0].trim());
+                        System.out.println("Account Type " + parts[1].trim());
+                        System.out.println("Full Name: " + parts[2].trim());
+                        System.out.println("Address: " + parts[5].trim());
+                        System.out.println("Email: " + parts[3].trim());
+                        System.out.println("Password: " + parts[4].trim());
                         break;
                     }
                 } else {
@@ -880,63 +882,7 @@ public class User {
     
         System.out.println("Product removed successfully.");
     }
-    public static void approveSellers() {
-        File originalFile = new File("Users.txt");
-        File tempFile = new File("tempUsers.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-            String line;
-            boolean firstLineSkipped = false;
-            while ((line = reader.readLine()) != null) {
-                if (!firstLineSkipped) {
-                    writer.write(line + System.lineSeparator()); // Write header
-                    firstLineSkipped = true;
-                    continue;
-                }
-                String[] parts = line.split("\\|");
-                if (parts.length >= 6) {
-                    String userType = parts[1].trim();
-                    String approvalStatus = parts[5].trim();
-
-                    if (userType.equals("seller") && approvalStatus.equals("pending")) {
-                        System.out.println("Pending Seller: " + line);
-                        System.out.println("Do you want to approve this seller? (yes/no)");
-                        String response = input.nextLine().trim().toLowerCase();
-
-                        if (response.equals("yes")) {
-                            parts[5] = "approved";
-                            System.out.println("Seller approved.");
-                        } else {
-                            System.out.println("Seller not approved.");
-                        }
-                    }
-
-                    writer.write(String.join("\\|", parts) + System.lineSeparator());
-                } else {
-                    // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Users.txt: " + line);
-                    writer.write(line + System.lineSeparator());
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error processing sellers: " + e.getMessage());
-            return;
-        }
-        boolean deleteSuccess = originalFile.delete();
-        if (!deleteSuccess) {
-            System.err.println("Failed to delete original file.");
-            return;
-        }
-
-        boolean renameSuccess = tempFile.renameTo(originalFile);
-        if (!renameSuccess) {
-            System.err.println("Failed to rename temporary file.");
-            return;
-        }
-
-        System.out.println("Seller approval process completed.");
-    }
+   
     public static void searchUsers() {
         String userType = "";
         boolean validUserType = false;
@@ -1439,4 +1385,40 @@ public class User {
             System.err.println("Error reading file: " + e.getMessage());
         }
     }
+    public static void approveSellers(int sellerID) {
+        File inputFile = new File("Users.txt");
+        List<String> lines = new ArrayList<>();
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            boolean firstLineSkipped = false;
+    
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    lines.add(line); // Add header line as is
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+    
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[0].trim()) == sellerID && parts[6].trim().equalsIgnoreCase("pending")) {
+                    parts[6] = "approved";
+                    line = String.join("|", parts);
+                }
+                lines.add(line); // Add modified or unmodified line
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+    
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile))) {
+            for (String line : lines) {
+                writer.write(line + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
+    
 }
