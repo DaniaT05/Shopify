@@ -1,1 +1,0 @@
-OrderItems_ID | Order_ID | Product_ID | Quantity

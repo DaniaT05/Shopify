@@ -1,2 +1,7 @@
-7,1,1
-7,3,1
+Buyer_ID  |  Product_ID | Quantity
+1|             
+2|              
+3|           
+4|             
+6|              
+7|

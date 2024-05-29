@@ -4,4 +4,3 @@ Category_ID  |  Category_Name
 3|              Cosmetics
 4|              Clothes
 6|              Stationary
-7| hhh

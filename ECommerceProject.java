@@ -1,11 +1,11 @@
 import java.io.*;
-import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 /*signUp
   logIn -> checkCredentials -> emailExists
 */
-public class User {
+public class ECommerceProject {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
         homePage();
@@ -75,23 +75,28 @@ public class User {
         boolean exit = false;
         while (!exit) {
             System.out.println("Welcome!\nWhat would you like to do: ");
-            System.out.println("1. View Categories\n2. Search Products\n3. View Products\n4. View Profile\n5. View Order Status\n6. View Cart\n7. Log Out");
+            System.out.println("1. View Categories\n2. Search Products\n3. View Products and add to cart\n4. View Profile\n5. View Order Status\n6. View Cart\n7. Log Out");
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
             switch (choice) {
-                case 1:
+                case 1: //works
                     viewCategories();
                     break;
                 case 2:
-                    //searchProducts();
+                    String productToSearch = "";
+                    System.out.println("Enter a product name to search: ");
+                    productToSearch = input.nextLine();
+                    System.out.println("");
+                    searchProducts();
                     break;
-                case 3:
+                case 3: //works
                    viewProducts();
+                    // addToCart(email);                  
                     break;
-                case 4:
-                    //viewProfile(email);
+                case 4: //works
+                    viewProfile(email);
                     break;
-                case 5:
+                case 5: //works
                     viewOrderStatus(email);
                     break;
                 case 6:
@@ -108,7 +113,7 @@ public class User {
     public static void sellerHomePage(String email) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("Welcome Seller! What would you like to do:");
+            System.out.println("Welcome! What would you like to do:");
             System.out.println("1. View your products\n2. Add Products\n3. Update Products\n4. Remove a Product\n5. View Pending Orders\n6. View All Orders\n7. Execute Order\n8. View Stats\n9. View Profile\n10. Log Out");
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
@@ -123,7 +128,6 @@ public class User {
                     boolean validProduct = false, validPrice = false, validCategory = false, status = false;
                     String newProduct = "", category = "";
                     int newPrice = 0, categoryID = -1;
-            
                     while (!validProduct) {
                         try {
                             System.out.println("Enter the new product name: ");
@@ -134,7 +138,6 @@ public class User {
                             input.nextLine(); // Clear the invalid input
                         }
                     }
-            
                     while (!validPrice) {
                         try {
                             System.out.println("Enter the new product's price: ");
@@ -149,9 +152,7 @@ public class User {
                             input.nextLine(); // Clear the invalid input
                         }
                     }
-            
                     input.nextLine(); // Consume the remaining newline character
-            
                     while (!validCategory) {
                         try {
                             viewCategories();
@@ -246,12 +247,12 @@ public class User {
                     }
                     break;
                 case 8:
-                    // viewStats(email);
+                    //viewStats(sellerIDByEmail(email));
                     break;
-                case 9:
+                case 9: // Works
                     viewProfile(email);
                     break;
-                case 10:
+                case 10: // Works
                     exit = true;
                     logOut();
                     break;
@@ -266,18 +267,18 @@ public class User {
         boolean exit = false;
         while (!exit) {
             try {
-                System.out.println("Welcome Admin! What would you like to do:");
+                System.out.println("Welcome! What would you like to do:");
                 System.out.println("1. Add Categories\n2. View Categories\n3. Update Categories\n4. Remove Categories\n5. Approve Sellers\n6. Search a user (buyer/seller)\n7. Remove User\n8. View Products\n9. View Profile\n10. Log Out");
                 int choice = input.nextInt();
                 input.nextLine(); // Consume newline left-over
                 switch (choice) {
-                    case 1:
+                    case 1: //works
                         addCategories();
                         break;
-                    case 2:
+                    case 2: //works
                         viewCategories();
                         break;
-                    case 3: {
+                    case 3: { //works, updates categories
                         viewCategories();
                         boolean validCategory = false;
                         int categoryID = 0;
@@ -298,7 +299,7 @@ public class User {
                         updateCategory(categoryID, newCategoryName, "Category.txt", "Category");
                         break;
                     }
-                    case 4:
+                    case 4: // works, removes categories
                         try {
                         System.out.println("Enter the ID of category you want to remove: ");
                         int categoryID = input.nextInt();
@@ -308,22 +309,63 @@ public class User {
                             System.out.println("Invalid Input");
                         }
                         break;
-                    case 5:
-                       //approveSellers();
+                    case 5: { //works
+                        viewPendingSellers();
+                        int sellerID = -1;
+                        boolean validInput = false;
+                        while (!validInput) {
+                            try {
+                                System.out.println("Enter the ID of seller you want to approve: ");
+                                sellerID = input.nextInt();
+                                validInput = true;
+                            }
+                            catch (InputMismatchException ex) {
+                                System.out.println("Incorrect Input. Please input correct seller ID: ");
+                                input.next(); // Clear the invalid input
+                            }
+                        }
+                        String userType = findUserTypeByID(sellerID);
+                            if (userType.equals("seller")) {
+                                approveSellers(sellerID);
+                            } else if (userType.equals("buyer")) {
+                                System.out.println("You cannot enter buyer ID!");
+                            } else if (userType.equals("Invalid")) {
+                                System.out.println("Seller ID not found!");
+                            } else {
+                                System.out.println("You cannot enter your own ID!");
+                            }
                         break;
+                    }
                     case 6:
                         //searchUsers();
                         break;
                     case 7:
-                        //removeUser();
+                    int userID = -1;
+                    boolean validInput = false;
+                    while (!validInput) {
+                        try {
+                            System.out.println("Enter the ID of user you want to remove: ");
+                            userID = input.nextInt();
+                            validInput = true;
+                        }
+                        catch (InputMismatchException ex) {
+                            System.out.println("Incorrect Input. Please input correct ID: ");
+                            input.next(); // Clear the invalid input
+                        }
+                    }
+                    String userType = findUserTypeByID(userID);
+                        if (userType.equals("seller") || userType.equals("buyer")) {
+                            remove(userID, "Users.txt", "User");
+                        } else
+                            System.out.println("You cannot enter your own ID!");
                         break;
-                    case 8:
+                    case 8: //works
                         viewProducts();
                         break;
-                    case 9:
-                        //viewProfile(email);
+                    case 9: //works
+                        viewProfile(email);
                         break;
-                    case 10:
+                    case 10: //works
                         exit = true;
                         //logOut();
                         break;
@@ -336,7 +378,7 @@ public class User {
                 System.out.println("Invalid Input");
             }
         }
-    }    
+    }
     public static String findUserDataByEmail(String email,String column) {
         // UserID | Type | Name | Email | Password | Address | Status
         // System.out.print(column);
@@ -404,7 +446,7 @@ public class User {
         boolean validUserType = false;
         while (!validUserType) {
             try {
-                System.out.println("Are you a \n1. Buyer or \n2. Seller? ");
+                System.out.println("Are you a \n1. Buyer or \n2. Seller? \n(Enter 1 for buyer and 2 for seller): ");
                 userTypeInt = input.nextInt();
                 input.nextLine(); // Consume newline left-over
                 switch (userTypeInt) {
@@ -564,14 +606,16 @@ public class User {
                     continue;
                 }
                 String[] parts = line.split("\\|");
-                if (parts.length >= 6) {
-                    String storedEmail = parts[4].trim();
+                if (parts.length >= 5) {
+                    String storedEmail = parts[3].trim();
                     if (storedEmail.equals(email)) {
                         System.out.println("Profile Information:");
-                        System.out.println("First Name: " + parts[2].trim());
-                        System.out.println("Last Name: " + parts[3].trim());
-                        System.out.println("Email: " + parts[4].trim());
-                        System.out.println("Address: " + parts[6].trim());
+                        System.out.println("User ID " + parts[0].trim());
+                        System.out.println("Account Type " + parts[1].trim());
+                        System.out.println("Full Name: " + parts[2].trim());
+                        System.out.println("Address: " + parts[5].trim());
+                        System.out.println("Email: " + parts[3].trim());
+                        System.out.println("Password: " + parts[4].trim());
                         break;
                     }
                 } else {
@@ -583,59 +627,68 @@ public class User {
         }
     }
     public static void viewOrderStatus(String email) {
-        try {
-            int buyerID = 0;
-            BufferedReader reader = new BufferedReader(new FileReader("Users.txt"));
+        int buyerID = -1;
+    
+        // Read buyer ID from Users.txt
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
             String line;
             boolean firstLineSkipped = false;
             while ((line = reader.readLine()) != null) {
                 if (!firstLineSkipped) {
-                    firstLineSkipped = true;
+                    firstLineSkipped = true; // Skip the header line
                     continue;
                 }
                 String[] parts = line.split("\\|");
                 if (parts.length >= 5) {
                     String buyerEmail = parts[3].trim();
                     if (buyerEmail.equals(email)) {
-                        buyerID = Integer.parseInt(parts[0]);
-                        reader.close();
+                        buyerID = Integer.parseInt(parts[0].trim());
+                        break;
                     }
-                } else {
-                    System.err.println("No email found ");
                 }
             }
-            BufferedReader reader2 = new BufferedReader(new FileReader("Order.txt"));
+            if (buyerID == -1) {
+                System.err.println("No email found ");
+                return;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Users.txt file: " + e.getMessage());
+            return;
+        }
+    
+        // Read order status from Order.txt
+        try (BufferedReader reader2 = new BufferedReader(new FileReader("Orders.txt"))) {
             String line2;
             boolean firstLineSkipped2 = false;
             int count = 1;
+            boolean ordersFound = false;
             while ((line2 = reader2.readLine()) != null) {
                 if (!firstLineSkipped2) {
-                    firstLineSkipped2 = true;
+                    firstLineSkipped2 = true; // Skip the header line
                     continue;
                 }
                 String[] parts = line2.split("\\|");
-                if (parts.length >= 5) {
-                    String buyerIDFromFile = parts[1].trim();
-                    int buyerIDFromFileToInt = Integer.parseInt(buyerIDFromFile);
-                    if (buyerIDFromFileToInt == buyerID) {
-                        System.out.println("Order " + count + "Status:");
+                if (parts.length >= 7) {
+                    int buyerIDFromFile = Integer.parseInt(parts[1].trim());
+                    if (buyerIDFromFile == buyerID) {
+                        System.out.println("Order " + count + " Status:");
                         System.out.println("Order ID: " + parts[0].trim());
                         System.out.println("Seller ID: " + parts[2].trim());
                         System.out.println("Price: " + parts[3].trim());
                         System.out.println("Status: " + parts[4].trim());
                         System.out.println("Date of Placing Order: " + parts[5].trim());
                         System.out.println("Date of Execution: " + parts[6].trim());
+                        System.out.println();
                         count++;
-                        break;
+                        ordersFound = true;
                     }
-                } else {
-                    System.err.println("No email found ");
                 }
             }
-
-
+            if (!ordersFound) {
+                System.err.println("No orders found for the given email.");
+            }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println("Error reading Order.txt file: " + e.getMessage());
         }
     }
     public static void viewCategories() {
@@ -778,165 +831,7 @@ public class User {
             System.err.println("Error reading file: " + e.getMessage());
         }
     }
-    public static void removeUser() {
-        System.out.println("Enter email to remove: ");
-        String emailToRemove = input.next();
-        File originalFile = new File("Users.txt");
-        File tempFile = new File("tempUsers.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            String line;
-            boolean userFound = false;
-            while ((line = reader.readLine()) != null) {
-                // Check if the line contains the email to be removed
-                if (line.contains(emailToRemove)) {
-                    userFound = true;
-                    continue; // Skip this line
-                }
-                // Write the line to the temporary file
-                writer.write(line + System.lineSeparator());
-            }
-
-            if (!userFound) {
-                System.out.println("User not found.");
-                return;
-            }
-
-        } catch (IOException e) {
-            System.err.println("Error removing user: " + e.getMessage());
-            return;
-        }
-
-        // Close the files and delete/rename them
-        boolean deleteSuccess = originalFile.delete();
-        if (!deleteSuccess) {
-            System.err.println("Failed to delete original file.");
-            return;
-        }
-        
-        boolean renameSuccess = tempFile.renameTo(originalFile);
-        if (!renameSuccess) {
-            System.err.println("Failed to rename temporary file.");
-            return;
-        }
-
-        System.out.println("User removed successfully.");
-    }
-    public static void removeProducts() {
-        System.out.println("Enter the Product ID of the product you want to remove:");
-        int productId = input.nextInt();
-        input.nextLine(); // Consume the newline
-    
-        File originalFile = new File("Products.txt");
-        File tempFile = new File("tempProducts.txt");
-    
-        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-    
-            String line;
-            boolean productFound = false;
-    
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|"); // Assuming the delimiter is "\\|"
-                if (parts.length >= 5) {
-                    int currentProductId = Integer.parseInt(parts[0].trim());
-                    if (currentProductId == productId) {
-                        productFound = true;
-                        // Skip writing this line to remove the product
-                        continue;
-                    }
-                    // Write the existing product details to the temporary file
-                    writer.write(line + System.lineSeparator());
-                } else {
-                    // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Products.txt: " + line);
-                    writer.write(line + System.lineSeparator());
-                }
-            }
-    
-            if (!productFound) {
-                System.out.println("Product not found.");
-            }
-    
-        } catch (IOException e) {
-            System.err.println("Error removing product: " + e.getMessage());
-            return;
-        }
-    
-        // Close the files and delete/rename them
-        boolean deleteSuccess = originalFile.delete();
-        if (!deleteSuccess) {
-            System.err.println("Failed to delete original file.");
-            return;
-        }
-    
-        boolean renameSuccess = tempFile.renameTo(originalFile);
-        if (!renameSuccess) {
-            System.err.println("Failed to rename temporary file.");
-            return;
-        }
-    
-        System.out.println("Product removed successfully.");
-    }
-    public static void approveSellers() {
-        File originalFile = new File("Users.txt");
-        File tempFile = new File("tempUsers.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-            String line;
-            boolean firstLineSkipped = false;
-            while ((line = reader.readLine()) != null) {
-                if (!firstLineSkipped) {
-                    writer.write(line + System.lineSeparator()); // Write header
-                    firstLineSkipped = true;
-                    continue;
-                }
-                String[] parts = line.split("\\|");
-                if (parts.length >= 6) {
-                    String userType = parts[1].trim();
-                    String approvalStatus = parts[5].trim();
-
-                    if (userType.equals("seller") && approvalStatus.equals("pending")) {
-                        System.out.println("Pending Seller: " + line);
-                        System.out.println("Do you want to approve this seller? (yes/no)");
-                        String response = input.nextLine().trim().toLowerCase();
-
-                        if (response.equals("yes")) {
-                            parts[5] = "approved";
-                            System.out.println("Seller approved.");
-                        } else {
-                            System.out.println("Seller not approved.");
-                        }
-                    }
-
-                    writer.write(String.join("\\|", parts) + System.lineSeparator());
-                } else {
-                    // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Users.txt: " + line);
-                    writer.write(line + System.lineSeparator());
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error processing sellers: " + e.getMessage());
-            return;
-        }
-        boolean deleteSuccess = originalFile.delete();
-        if (!deleteSuccess) {
-            System.err.println("Failed to delete original file.");
-            return;
-        }
-
-        boolean renameSuccess = tempFile.renameTo(originalFile);
-        if (!renameSuccess) {
-            System.err.println("Failed to rename temporary file.");
-            return;
-        }
-
-        System.out.println("Seller approval process completed.");
-    }
+   
     public static void searchUsers() {
         String userType = "";
         boolean validUserType = false;
@@ -995,44 +890,44 @@ public class User {
             System.err.println("Error reading file: " + e.getMessage());
         }
     }
-    public static void viewProductsByCategories(int categoryID) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("Products.txt"));
-            String line;
-            boolean firstLineSkipped = false;
-            while ((line = reader.readLine()) != null) {
-                if (!firstLineSkipped) {
-                    firstLineSkipped = true;
-                    continue;
-                }
-                String[] parts = line.split("\\|");
-                if (parts.length >= 5) { // Ensure parts has at least 5 elements
-                    int currentCategoryID;
-                    try {
-                        currentCategoryID = Integer.parseInt(parts[4].trim());
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid category ID format: " + parts[4]);
-                        continue;
-                    }
-                    if (currentCategoryID == categoryID) {
-                        System.out.println("Product ID: " + parts[0]);
-                        System.out.println("Name: " + parts[1]);
-                        System.out.println("Price: PKR" + parts[2]);
-                        System.out.println("Seller ID: " + parts[3]);
-                        System.out.println("Category ID: " + parts[4]);
-                        System.out.println("---------------------------------");
-                    }
-                } else {
-                    // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Products.txt: " + line);
-                }
-            }
-            System.out.println("Do you want to add something to cart or return to homepage?\n1. Add to Cart\n2. Return to Homepage");
+    // public static void viewProductsByCategories(int categoryID) {
+    //     try {
+    //         BufferedReader reader = new BufferedReader(new FileReader("Products.txt"));
+    //         String line;
+    //         boolean firstLineSkipped = false;
+    //         while ((line = reader.readLine()) != null) {
+    //             if (!firstLineSkipped) {
+    //                 firstLineSkipped = true;
+    //                 continue;
+    //             }
+    //             String[] parts = line.split("\\|");
+    //             if (parts.length >= 5) { // Ensure parts has at least 5 elements
+    //                 int currentCategoryID;
+    //                 try {
+    //                     currentCategoryID = Integer.parseInt(parts[4].trim());
+    //                 } catch (NumberFormatException e) {
+    //                     System.err.println("Invalid category ID format: " + parts[4]);
+    //                     continue;
+    //                 }
+    //                 if (currentCategoryID == categoryID) {
+    //                     System.out.println("Product ID: " + parts[0]);
+    //                     System.out.println("Name: " + parts[1]);
+    //                     System.out.println("Price: PKR" + parts[2]);
+    //                     System.out.println("Seller ID: " + parts[3]);
+    //                     System.out.println("Category ID: " + parts[4]);
+    //                     System.out.println("---------------------------------");
+    //                 }
+    //             } else {
+    //                 // Handle case where line doesn't have enough elements
+    //                 System.err.println("Invalid format in Products.txt: " + line);
+    //             }
+    //         }
+    //         System.out.println("Do you want to add something to cart or return to homepage?\n1. Add to Cart\n2. Return to Homepage");
 
-        } catch (IOException ex) {
-            System.err.println("Error reading file: " + ex.getMessage());
-        }
-    }
+    //     } catch (IOException ex) {
+    //         System.err.println("Error reading file: " + ex.getMessage());
+    //     }
+    // }
     public static void updateCategory(int ID, String newName, String fileName, String type) {
         File inputFile = new File(fileName);
         List<String> lines = new ArrayList<>();
@@ -1205,7 +1100,7 @@ public class User {
             System.out.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
-    private static boolean isOwnedBySeller(int productId, String sellerEmail) {
+    public static boolean isOwnedBySeller(int productId, String sellerEmail) {
         int sellerId = -1;
         try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
             String line;
@@ -1439,4 +1334,83 @@ public class User {
             System.err.println("Error reading file: " + e.getMessage());
         }
     }
+    public static void approveSellers(int sellerID) { //works
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    lines.add(line); // Add header line as is
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[0].trim()) == sellerID) {
+                    if (parts[6].trim().equalsIgnoreCase("pending")) {
+                        parts[6] = "approved";
+                        line = String.join("|", parts);
+                    } else {
+                        System.out.println("Seller is already approved");
+                    }
+                }
+                lines.add(line); // Add modified or unmodified line
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt"))) {
+            for (String line : lines) {
+                writer.write(line + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
+    public static void viewPendingSellers() {
+        boolean sellerFound = false; // Flag to track if any sellers are found
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && parts[1].trim().equalsIgnoreCase("seller") && parts[6].trim().equalsIgnoreCase("pending")) {
+                    System.out.println("User ID: " + parts[0].trim() + ", Seller Name " + parts[2].trim() + ", Email: " + parts[3].trim() + ", Address: " + parts[5].trim()+ ", Status: " + parts[6].trim() );
+                    sellerFound = true; // Set the flag to true if a seller is found
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    
+        if (!sellerFound) {
+            System.out.println("No sellers with pending status found.");
+        }
+    }
+    public static String findUserTypeByID(int ID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 5 && Integer.parseInt(parts[0].trim())==ID) {
+                    return parts[1].trim();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return "Invalid";
+        
+    }
 }
+    
