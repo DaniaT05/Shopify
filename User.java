@@ -1,7 +1,7 @@
 import java.io.*;
-import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 /*signUp
   logIn -> checkCredentials -> emailExists
 */

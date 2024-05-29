@@ -1,3 +1,11 @@
-1,2,laptop,electronics,192,98
-2,1,hairclips,fashion,2,50
-3,1,dress,fashion,20,20
+Product_ID  |   Name            | Price | Seller_ID | Category_ID 
+1           |   Cup             |  80   |      7    |     2
+2           |   Tray            |  50   |      7    |     2
+3           |   Microwave Oven  |  8000 |      6    |     1
+4           |   Eye Shadow      |  2000 |      4    |     3
+6           |   Red Velvet      |  4000 |      5    |     4
+7           |  Yellow Velvet    | 90    |      5    |     4
+8           |       Velvet      |  4000 |      5    |     4
+9 | Chair | 40 | 5 | 4
+10 | Sofa | 500 | 5 | 2
+11 | Red Silk | 300 | 5 | 4
