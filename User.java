@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 /*signUp
   logIn -> checkCredentials -> emailExists
 */
@@ -107,17 +109,17 @@ public class User {
         boolean exit = false;
         while (!exit) {
             System.out.println("Welcome Seller! What would you like to do:");
-            System.out.println("1. View your products\n2. Add Products\n3. Update Products\n4. Remove a Product\n5. View Orders\n6. Execute Order\n7. View Profile\n8. View Stats\n9. Log Out");
+            System.out.println("1. View your products\n2. Add Products\n3. Update Products\n4. Remove a Product\n5. View Pending Orders\n6. View All Orders\n7. Execute Order\n8. View Stats\n9. View Profile\n10. Log Out");
             int choice = input.nextInt();
             input.nextLine(); // Consume newline left-over
             switch (choice) {
-                case 1:
-                    int sellerID = -1;
-                    sellerID = sellerIDByEmail(email);
-                    viewProducts(sellerID);
+                case 1: // Works, shows seller products
+                    viewProducts(sellerIDByEmail(email));
                     break;
-                case 2: {
-                    //Add products
+                case 2: { //Works , Adds products
+                    int sellerId = -1;
+                    sellerId = sellerIDByEmail(email);
+                    viewProducts(sellerId);
                     boolean validProduct = false, validPrice = false, validCategory = false, status = false;
                     String newProduct = "", category = "";
                     int newPrice = 0, categoryID = -1;
@@ -166,12 +168,11 @@ public class User {
                             input.nextLine(); // Clear the invalid input
                         }
                     }
-                    int sellerIDByEmail = sellerIDByEmail(email);
-                    if (sellerIDByEmail == -1) {
+                    if (sellerId == -1) {
                         System.out.println("Seller ID not found.");
                     } else {
                         int newID = getLastId("Products.txt") + 1;
-                        status = addProduct(newID, newProduct, newPrice, sellerIDByEmail, categoryID);
+                        status = addProduct(newID, newProduct, newPrice, sellerId, categoryID);
                     }
             
                     if (!status) {
@@ -181,8 +182,8 @@ public class User {
                     }
                     break;
                 }
-                case 3:{
-                    viewProducts();
+                case 3:{ //Works, Updates Products
+                    viewProducts(sellerIDByEmail(email));
                     boolean validInput = false;
                     while (!validInput) {
                         try {
@@ -201,8 +202,8 @@ public class User {
                     }
                     break;
                 }
-                case 4: {
-                    viewProducts();
+                case 4: { //Works, removes products
+                    viewProducts(sellerIDByEmail(email));
                     boolean validInput = false;
                     while (!validInput) {
                         try {
@@ -221,24 +222,41 @@ public class User {
                     }
                     break;
                 }
-                case 5:
-                    //viewOrders(email);
+                case 5: // Works, View Orders
+                    viewPendingOrders(sellerIDByEmail(email));
                     break;
-                case 6:
-                    // executeOrder();
+                case 6: // Works, View All Orders
+                    viewAllOrders(sellerIDByEmail(email));
                     break;
-                case 7:
-                    viewProfile(email);
+                case 7: // Works, executes order
+                int orderID;
+                    boolean orderIDExists = false;
+                    int sellerID = sellerIDByEmail(email);
+                    if (sellerID == -1) {
+                        System.out.println("Seller ID not found.");
+                    } else {
+                        System.out.println("Enter the order ID you want to execute: ");
+                        orderID = input.nextInt();
+                        orderIDExists = orderIDBySellerIDAndPending(orderID, sellerID);
+                        if (orderIDExists)
+                            executeOrder(orderID);
+                        else {
+                            System.out.println("Order ID not found.");
+                        }
+                    }
                     break;
                 case 8:
                     // viewStats(email);
                     break;
                 case 9:
+                    viewProfile(email);
+                    break;
+                case 10:
                     exit = true;
                     logOut();
                     break;
                 default:
-                    System.out.println("Invalid choice. Please enter a number from 1 to 9.");
+                    System.out.println("Invalid choice. Please enter a number from 1 to 10.");
                     break;
             }
         }
@@ -758,20 +776,6 @@ public class User {
             reader.close();
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
-        }
-    }
-    public static void viewOrders(String email) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("Orders.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(email)) {
-                    System.out.println(line);
-                }
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.err.println("Error reading orders file: " + e.getMessage());
         }
     }
     public static void removeUser() {
@@ -1325,6 +1329,111 @@ public class User {
                 if (parts.length >= 5 && Integer.parseInt(parts[3].trim()) == sellerID) {
                     System.out.println("Product ID: " + parts[0].trim() + ", Product Name: " + parts[1].trim() + ", Price: " + parts[2].trim() + ", Seller ID: " + parts[3].trim() + " , Category ID: " + parts[4].trim());
                 }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
+    public static void viewPendingOrders(int sellerID) {
+        boolean ordersFound = false; // Flag to track if any orders are found
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader("Orders.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+    
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+    
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[2].trim()) == sellerID && parts[4].trim().equalsIgnoreCase("Pending")) {
+                    System.out.println("Order ID: " + parts[0].trim() + ", Buyer ID: " + parts[1].trim() + ", Price: " + parts[3].trim() + ", Status: " + parts[4].trim() + ", Date of Placing Order: " + parts[5].trim());
+                    ordersFound = true; // Set the flag to true if an order is found
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    
+        if (!ordersFound) {
+            System.out.println("No orders found.");
+        }
+    }
+    public static void viewAllOrders(int sellerID) {
+        boolean ordersFound = false; 
+        try (BufferedReader reader = new BufferedReader(new FileReader("Orders.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[2].trim()) == sellerID) {
+                    System.out.println("Order ID: " + parts[0].trim() + ", Buyer ID: " + parts[1].trim() + ", Price: " + parts[3].trim() + ", Status: " + parts[4].trim() + ", Date of Placing Order: " + parts[5].trim() + ", Date of Executing Order: " + parts[6].trim());
+                    ordersFound = true; // Set the flag to true if an order is found
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    
+        if (!ordersFound) {
+            System.out.println("No orders found.");
+        }
+    }
+    public static boolean orderIDBySellerIDAndPending(int orderID, int sellerID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Orders.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[2].trim()) == sellerID && Integer.parseInt(parts[0].trim()) == orderID && parts[4].trim().equalsIgnoreCase("Pending")) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return false;
+    }
+    public static String todaysDate() {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Updated format
+        String formattedDate = currentDate.format(formatter);
+        return formattedDate;
+    }
+    public static void executeOrder(int orderID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Orders.txt"))) {
+            StringBuilder fileContent = new StringBuilder();
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    fileContent.append(line).append(System.lineSeparator());
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6 && Integer.parseInt(parts[0].trim()) == orderID) {
+                    String newLine = parts[0].trim() + "|" + parts[1].trim() + "|" + parts[2].trim() + "|" + parts[3].trim() + "|" + "Delivered" + "|" + parts[5].trim() + "|" + todaysDate();
+                    fileContent.append(newLine).append(System.lineSeparator());
+                    System.out.println("Order with ID " + orderID + " has been delivered successfully.");
+                } else {
+                    fileContent.append(line).append(System.lineSeparator());
+                }
+            }
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Orders.txt"))) {
+                writer.write(fileContent.toString());
+            } catch (IOException e) {
+                System.err.println("Error writing to file: " + e.getMessage());
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
