@@ -9,3 +9,4 @@ Product_ID  |   Name            | Price | Seller_ID | Category_ID
 9 | Chair | 40 | 5 | 4
 10 | Sofa | 500 | 5 | 2
 11 | Red Silk | 300 | 5 | 4
+12 | Fur | 800 | 15 | 4
