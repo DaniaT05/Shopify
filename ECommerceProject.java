@@ -136,7 +136,25 @@ public class ECommerceProject {
                     viewOrderStatus(email);
                     break;
                 case 6:
+                    int option = 0;
                     viewCart(userIDByEmail(email));
+                    try {
+                        System.out.println("Do you want place order?\nEnter 1 for placing order and 2 for going back to home page: ");
+                        option = input.nextInt();
+                        switch (option) {
+                            case 1:
+                                checkout(userIDByEmail(email));
+                                break;
+                            case 2:
+                                break;
+                            default:
+                            System.out.println("Invalid Input. Enter 1 or 2");
+                        }
+                        System.out.println("Do you want to add another product to cart?\nEnter 1 for adding product and 2 for viewing buyer menu: ");
+                    }
+                    catch (InputMismatchException ex) {
+                        System.out.println("Invalid Input.");
+                    }
                     break;
                 case 7://works
                     exit = true;
@@ -446,11 +464,11 @@ public class ECommerceProject {
                     }
                 } else {
                     // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Users.txt: " + line);
+                    System.out.println("Invalid format in Users.txt: " + line);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return "error";
     }
@@ -571,7 +589,7 @@ public class ECommerceProject {
                 }
             }    
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return false;
     }
@@ -593,12 +611,12 @@ public class ECommerceProject {
                         return true;
                     }
                 } else {
-                    System.err.println("Invalid format in Users.txt: " + line);
+                    System.out.println("Invalid format in Users.txt: " + line);
                 }
             }
             reader.close();
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return false;
     }
@@ -617,7 +635,7 @@ public class ECommerceProject {
             }
             // reader.close();
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
 
         if (lastLine != null) {
@@ -625,7 +643,7 @@ public class ECommerceProject {
             try {
                 return Integer.parseInt(parts[0].trim());
             } catch (NumberFormatException e) {
-                System.err.println("Error parsing integer: " + e.getMessage());
+                System.out.println("Error parsing integer: " + e.getMessage());
             }
         }
 
@@ -655,11 +673,11 @@ public class ECommerceProject {
                         break;
                     }
                 } else {
-                    System.err.println("Invalid format in Users.txt: " + line);
+                    System.out.println("Invalid format in Users.txt: " + line);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void viewOrderStatus(String email) {
@@ -684,11 +702,11 @@ public class ECommerceProject {
                 }
             }
             if (buyerID == -1) {
-                System.err.println("No email found ");
+                System.out.println("No email found ");
                 return;
             }
         } catch (IOException e) {
-            System.err.println("Error reading Users.txt file: " + e.getMessage());
+            System.out.println("Error reading Users.txt file: " + e.getMessage());
             return;
         }
     
@@ -721,10 +739,10 @@ public class ECommerceProject {
                 }
             }
             if (!ordersFound) {
-                System.err.println("No orders found for the given email.");
+                System.out.println("No orders found for the given email.");
             }
         } catch (IOException e) {
-            System.err.println("Error reading Order.txt file: " + e.getMessage());
+            System.out.println("Error reading Order.txt file: " + e.getMessage());
         }
     }
     public static void viewCategories() {
@@ -744,18 +762,8 @@ public class ECommerceProject {
                 System.out.println("Category ID: " + parts[0].trim() + ", Category Name: " + parts[1].trim());
                 count++;
             } 
-        //         try {
-        //             while (!(categoryID <= count)) {
-        //                 System.out.println("Enter Category ID to view its products: ");
-        //                 categoryID = input.nextInt();
-        //             }
-        //             viewProductsByCategories(categoryID);
-        //         }
-        //         catch (InputMismatchException ex) {
-        //             System.out.println("Incorrect Input. Please enter a number.");
-        //         }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void viewCart(String email) {
@@ -771,7 +779,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void addCategories() {
@@ -809,7 +817,7 @@ public class ECommerceProject {
                 System.out.println("---------------------------------");
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void viewSellerProducts(String email) {
@@ -833,12 +841,12 @@ public class ECommerceProject {
                         System.out.println("--------------------------");
                     }
                 } else {
-                    System.err.println("Invalid format in Products.txt: " + line);
+                    System.out.println("Invalid format in Products.txt: " + line);
                 }
             }
             reader.close();
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
    
@@ -888,7 +896,7 @@ public class ECommerceProject {
                     }
                 } else {
                     // Handle case where line doesn't have enough elements
-                    System.err.println("Invalid format in Users.txt: " + line);
+                    System.out.println("Invalid format in Users.txt: " + line);
                 }
             }
 
@@ -897,7 +905,7 @@ public class ECommerceProject {
             }
 
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     // public static void viewProductsByCategories(int categoryID) {
@@ -916,7 +924,7 @@ public class ECommerceProject {
     //                 try {
     //                     currentCategoryID = Integer.parseInt(parts[4].trim());
     //                 } catch (NumberFormatException e) {
-    //                     System.err.println("Invalid category ID format: " + parts[4]);
+    //                     System.out.println("Invalid category ID format: " + parts[4]);
     //                     continue;
     //                 }
     //                 if (currentCategoryID == categoryID) {
@@ -929,13 +937,13 @@ public class ECommerceProject {
     //                 }
     //             } else {
     //                 // Handle case where line doesn't have enough elements
-    //                 System.err.println("Invalid format in Products.txt: " + line);
+    //                 System.out.println("Invalid format in Products.txt: " + line);
     //             }
     //         }
     //         System.out.println("Do you want to add something to cart or return to homepage?\n1. Add to Cart\n2. Return to Homepage");
 
     //     } catch (IOException ex) {
-    //         System.err.println("Error reading file: " + ex.getMessage());
+    //         System.out.println("Error reading file: " + ex.getMessage());
     //     }
     // }
     public static void updateCategory(int ID, String newName, String fileName, String type) {
@@ -1127,7 +1135,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
             return false;
         }
         if (sellerId == -1) {
@@ -1152,7 +1160,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return false;
     }
@@ -1167,7 +1175,7 @@ public class ECommerceProject {
             writer.write(newProduct);
             return true;
         } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
+            System.out.println("Error writing to file: " + e.getMessage());
             return false;
         }
     }
@@ -1188,7 +1196,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         
         if (sellerID == -1) {
@@ -1214,7 +1222,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         if (categoryID == -1) {
             System.out.println("Category with the specified name not found.");
@@ -1236,7 +1244,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void viewPendingOrders(int sellerID) {
@@ -1259,7 +1267,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     
         if (!ordersFound) {
@@ -1283,7 +1291,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     
         if (!ordersFound) {
@@ -1305,7 +1313,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return false;
     }
@@ -1338,10 +1346,10 @@ public class ECommerceProject {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("Orders.txt"))) {
                 writer.write(fileContent.toString());
             } catch (IOException e) {
-                System.err.println("Error writing to file: " + e.getMessage());
+                System.out.println("Error writing to file: " + e.getMessage());
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     }
     public static void approveSellers(int sellerID) { //works
@@ -1367,7 +1375,7 @@ public class ECommerceProject {
                 lines.add(line); // Add modified or unmodified line
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
             return;
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt"))) {
@@ -1375,7 +1383,7 @@ public class ECommerceProject {
                 writer.write(line + System.lineSeparator());
             }
         } catch (IOException e) {
-            System.err.println("Error writing file: " + e.getMessage());
+            System.out.println("Error writing file: " + e.getMessage());
         }
     }
     public static void viewPendingSellers() {
@@ -1395,7 +1403,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
     
         if (!sellerFound) {
@@ -1417,7 +1425,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return "Invalid";
     }
@@ -1432,7 +1440,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
             return;
         }
         if (foundProducts.isEmpty()) {
@@ -1464,7 +1472,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
             return false;
         }
         return false;
@@ -1486,7 +1494,7 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         if (userID == -1) {
             System.out.println("User with this email not found.");
@@ -1503,12 +1511,12 @@ public class ECommerceProject {
             writer.write(productInCart);
             return true;
         } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
+            System.out.println("Error writing to file: " + e.getMessage());
             return false;
         }
     }
     public static void viewCart(int userID) {
-        boolean productInCartFound = false; 
+        boolean productInCartFound = false;
         try (BufferedReader reader = new BufferedReader(new FileReader("Cart.txt"))) {
             String line;
             boolean firstLineSkipped = false;
@@ -1518,18 +1526,30 @@ public class ECommerceProject {
                     continue;
                 }
                 String[] parts = line.split("\\|");
-                if (parts.length >= 3 && Integer.parseInt(parts[0].trim()) == userID) {
-                    System.out.println("Product ID: " + parts[1].trim() + ", Product Name: " + productNameByID(Integer.parseInt(parts[1].trim())) + ", Quantity: " + parts[2].trim());
-                    productInCartFound = true;
+                if (parts.length >= 3) {
+                    int cartUserID = Integer.parseInt(parts[0].trim());
+                    if (cartUserID == userID) {
+                        int productID = Integer.parseInt(parts[1].trim());
+                        String productName = productNameByID(productID);
+                        String quantity = parts[2].trim();
+
+                        System.out.println("Product ID: " + productID + ", Product Name: " + productName + ", Quantity: " + quantity);
+                        productInCartFound = true;
+                    }
+                } else {
+                    System.out.println("Invalid format in Cart.txt: " + line);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing number: " + e.getMessage());
         }
         if (!productInCartFound) {
-            System.out.println("No orders found.");
+            System.out.println("Cart is empty at the moment. Add products in cart to view.");
         }
     }
+
     public static String productNameByID(int productID) {
         String productName = "";
         try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
@@ -1547,11 +1567,14 @@ public class ECommerceProject {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
         }
         if (productName.isEmpty()) {
             System.out.println("Product with ID " + productID + " not found.");
         }
         return productName;
+    }
+    public static void checkout(int buyerID) {
+
     }
 }
