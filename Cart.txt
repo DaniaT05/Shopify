@@ -1,5 +1,2 @@
-Buyer_ID  |  Product_ID | Quantity
-14 | 12 | 2
-14 | 1 | 5
+BuyerID | ProductID | Quantity
 13 | 12 | 2
-14 | 11 | 5

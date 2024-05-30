@@ -5,7 +5,7 @@ User ID | User Type |  User Name    |            Email          | Password      
 5       |   seller  |Naqiya Ezzy    |naqiyaezzy@gmail.com       |NaqiyaEzzy     |Blue Area, Isb     |approved            
 6       |   buyer   |Ayesha Mansoor |ayeshamansoor@gmail.com    |AyeshaMansoor  |G-11, Isb          |----
 7       |   buyer   |Rizwan Rashid  |rizwanrashid@gmail.com     |RizwanRashid   |Bahria Town        |----                                    
-9       |   seller  |Sundas Ahmed   |sundasahmed@gmail.com      |SundasAhmed    |Murree Road, Rwp   |pending
+9       |   seller  |Sundas Ahmed   |sundasahmed@gmail.com      |SundasAhmed    |Murree Road, Rwp   |approved
 10      |   buyer   |Sumbal Haider  |sumbalhaider@gmail.com     |SumbalHaider   |Rawal Road,Rwp     |----
 11|	buyer|	Dania Shahid|	daniashahid@gmail.com|	DaniaShahid|	Blue Area |----
 12|	buyer|	test test|	test|	test|	test|----
