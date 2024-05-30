@@ -88,7 +88,7 @@ public class ECommerceProject {
                     productToSearch = input.nextLine();
                     searchProducts(productToSearch);
                     break;
-                case 3: 
+                case 3: //works
                    viewProducts();
                    boolean validInput = false;
                    int productID = -1, quantity = -1;
@@ -136,7 +136,7 @@ public class ECommerceProject {
                     viewOrderStatus(email);
                     break;
                 case 6:
-                    // viewCart(userIDByEmail(email));
+                    viewCart(userIDByEmail(email));
                     break;
                 case 7://works
                     exit = true;
@@ -1506,5 +1506,52 @@ public class ECommerceProject {
             System.err.println("Error writing to file: " + e.getMessage());
             return false;
         }
+    }
+    public static void viewCart(int userID) {
+        boolean productInCartFound = false; 
+        try (BufferedReader reader = new BufferedReader(new FileReader("Cart.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 3 && Integer.parseInt(parts[0].trim()) == userID) {
+                    System.out.println("Product ID: " + parts[1].trim() + ", Product Name: " + productNameByID(Integer.parseInt(parts[1].trim())) + ", Quantity: " + parts[2].trim());
+                    productInCartFound = true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        if (!productInCartFound) {
+            System.out.println("No orders found.");
+        }
+    }
+    public static String productNameByID(int productID) {
+        String productName = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 4 && Integer.parseInt(parts[0].trim()) == productID) {
+                    productName = parts[1].trim();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        if (productName.isEmpty()) {
+            System.out.println("Product with ID " + productID + " not found.");
+        }
+        return productName;
     }
 }
