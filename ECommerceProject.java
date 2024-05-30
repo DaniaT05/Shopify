@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 /*signUp
   logIn -> checkCredentials -> emailExists
-*/
+*///add to cart, view cart, checkout,
 public class ECommerceProject {
     public static final Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
@@ -82,16 +82,52 @@ public class ECommerceProject {
                 case 1: //works
                     viewCategories();
                     break;
-                case 2:
+                case 2: //works
                     String productToSearch = "";
                     System.out.println("Enter a product name to search: ");
                     productToSearch = input.nextLine();
-                    System.out.println("");
-                    searchProducts();
+                    searchProducts(productToSearch);
                     break;
-                case 3: //works
+                case 3: 
                    viewProducts();
-                    // addToCart(email);                  
+                   boolean validInput = false;
+                   int productID = -1, quantity = -1;
+                   while (!validInput) {
+                       try {
+                            System.out.println("Enter the Product ID of the product you want to add to cart: ");
+                            productID = input.nextInt();
+                            if (productIDExists(productID)) {
+                                validInput = true;
+                            }
+                            else
+                                System.out.println("Product ID not found.");
+                       }
+                       catch (InputMismatchException e) {
+                           System.out.println("Invalid input. Please enter a valid integer for the Product ID.");
+                           input.nextLine(); // consume the invalid input  
+                       }
+                    }
+                    boolean validQuantity = false;
+                    while (!validQuantity) {
+                       try {
+                            System.out.println("Enter quantity: ");
+                            quantity = input.nextInt();
+                            if (quantity > 0) {
+                                validQuantity = true;
+                            }
+                            else
+                                System.out.println("Quantity cannot be less than or equal to zero.");
+                       }
+                       catch (InputMismatchException e) {
+                           System.out.println("Invalid input. Please enter a valid integer for the Product ID.");
+                           input.nextLine(); // consume the invalid input  
+                       }
+                    }
+                    if (addToCart(productID, userIDByEmail(email), quantity)) {
+                        System.out.println("Product added to cart.");
+                    }
+                    else
+                        System.out.println("Failed to add product.");
                     break;
                 case 4: //works
                     viewProfile(email);
@@ -100,9 +136,9 @@ public class ECommerceProject {
                     viewOrderStatus(email);
                     break;
                 case 6:
-                    viewCart(email);
+                    // viewCart(userIDByEmail(email));
                     break;
-                case 7:
+                case 7://works
                     exit = true;
                     break;
                 default:
@@ -336,10 +372,10 @@ public class ECommerceProject {
                             }
                         break;
                     }
-                    case 6:
-                        //searchUsers();
+                    case 6: //works
+                        searchUsers();
                         break;
-                    case 7:
+                    case 7: //Works, removes user
                     int userID = -1;
                     boolean validInput = false;
                     while (!validInput) {
@@ -753,32 +789,6 @@ public class ECommerceProject {
             System.out.println("Error occurred while writing to file: " + e.getMessage());
         }
     }
-    public static void searchProducts() {
-        System.out.println("Enter product name to search: ");
-        String productName = input.nextLine();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
-            String line;
-            boolean found = false;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(productName)) {
-                    System.out.println("Product found:");
-                    System.out.println("Product ID: " + parts[0].trim());
-                    System.out.println("Name: " + parts[1].trim());
-                    System.out.println("Price: " + parts[2].trim());
-                    System.out.println("Seller ID: " + parts[3].trim());
-                    System.out.println("Category ID: " + parts[4].trim());
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                System.out.println("Product not found.");
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-    }
     public static void viewProducts() {
         // Product_ID | Name | Price | Seller_ID | Category_ID
         try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
@@ -867,10 +877,10 @@ public class ECommerceProject {
                     continue;
                 }
 
-                String[] parts = line.split("\\|"); // Assuming the delimiter is ","
-                if (parts.length >= 6) { // Ensure parts has at least 6 elements
+                String[] parts = line.split("\\|"); 
+                if (parts.length >= 5) { // Ensure parts has at least 6 elements
                     String storedUserType = parts[1].trim().toLowerCase();
-                    String fullName = parts[2].trim().toLowerCase() + " " + parts[3].trim().toLowerCase();
+                    String fullName = parts[2].trim().toLowerCase();
 
                     if (storedUserType.equals(userType) && fullName.contains(searchName)) {
                         found = true;
@@ -1410,7 +1420,91 @@ public class ECommerceProject {
             System.err.println("Error reading file: " + e.getMessage());
         }
         return "Invalid";
-        
+    }
+    public static void searchProducts(String productToSearch) {
+        List<String[]> foundProducts = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 5 && parts[1].trim().equalsIgnoreCase(productToSearch)) {
+                    foundProducts.add(parts);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+        if (foundProducts.isEmpty()) {
+            System.out.println("Product not found.");
+        } else {
+            System.out.println("Products found:");
+            for (String[] product : foundProducts) {
+                System.out.println("Product ID: " + product[0].trim());
+                System.out.println("Name: " + product[1].trim());
+                System.out.println("Price: " + product[2].trim());
+                System.out.println("Seller ID: " + product[3].trim());
+                System.out.println("Category ID: " + product[4].trim());
+                System.out.println();
+            }
+        }
+    }
+    public static boolean productIDExists(int productID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Products.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 3 && Integer.parseInt(parts[0].trim()) == productID) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return false;
+        }
+        return false;
+    }
+    public static int userIDByEmail(String userEmail) {
+        int userID = -1;
+        try (BufferedReader reader = new BufferedReader(new FileReader("Users.txt"))) {
+            String line;
+            boolean firstLineSkipped = false;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true; // Skip the header line
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 5 && parts[3].trim().equals(userEmail)) {
+                    userID = Integer.parseInt(parts[0].trim());
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        if (userID == -1) {
+            System.out.println("User with this email not found.");
+        }
+        return userID;
+    }
+    public static boolean addToCart(int productID, int userID, int quantity) {
+        String productInCart = userID + " | " + productID + " | " + quantity;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Cart.txt", true))) {
+            File file = new File("Cart.txt");
+            if (file.length() > 0) {
+                writer.newLine(); // Add a new line before writing the new product
+            }
+            writer.write(productInCart);
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+            return false;
+        }
     }
 }
-    
