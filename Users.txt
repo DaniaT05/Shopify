@@ -1,5 +1,5 @@
 User ID | User Type |  User Name    |            Email          | Password      | Address           |Approve Status
-1       |   admin   |Admin User     |aa      |aa    |Adyala Road, Rwp   |----
+1       |   admin   |Admin User     |admin@cmart.com      |admin123    |Adyala Road, Rwp   |----
 3       |   buyer   |Dania Taj      |daniataj@gmail.com         |Daniataj       |Ali town           |----
 4       |   buyer   |Sakina Abbas   |sakinaabbas@gmail.com      |SakinaAbbas    |Satellite Town, Rwp|----
 5       |   seller  |Naqiya Ezzy    |naqiyaezzy@gmail.com       |NaqiyaEzzy     |Blue Area, Isb     |approved            
@@ -12,3 +12,6 @@ User ID | User Type |  User Name    |            Email          | Password      
 13|	seller|	seller test|	test@test.com|	12345678|	tets|approved
 14       |   buyer   |Sakina Abbas   |bb      |bb   |Satellite Town, Rwp|----
 15|	seller|	seller test|	ss|	ss|	tets|approved
+16|	buyer|	Saira Khan|	sairakhan@gmail.com|	SairaKhan|	Rwp,Pakistan|
+18|	buyer|	Ali Haider|	alihaider@gmail.com|	AliHaider|	Blue Area, Islamabad|
+19|	buyer|	Faraz Ali|	farazali@gmail.com|	FarazAli|	abc|
