@@ -8,5 +8,5 @@ Product_ID  |   Name            | Price | Seller_ID | Category_ID
 8           |       Velvet      |  4000 |      5    |     4
 9 | Chair | 40 | 5 | 4
 10 | Sofa | 500 | 5 | 2
-11 | Red Silk | 300 | 5 | 4
-12 | Chair | 800 | 15 | 4
+12 |Keyboard|0| 15 | 4
+13 |Pencil|40| 5 | 6
